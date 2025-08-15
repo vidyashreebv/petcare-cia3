@@ -1,0 +1,70 @@
+services:
+  firestore-emulator:
+    build:
+      context: .
+      dockerfile: ./firebase-emulator/Dockerfile
+    container_name: firestore-emulator
+    ports:
+      - "8080:8080" # Firestore emulator
+      - "4000:4000" # Emulator UI
+    environment:
+      - FIREBASE_PROJECT_ID=demo-petcare
+    volumes:
+      - firebase_data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:4000"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  pet-service:
+    build: ./pet-service
+    container_name: pet-service
+    ports:
+      - "3001:3000"
+    environment:
+      - PORT=3000
+      - FIREBASE_PROJECT_ID=demo-petcare
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:8080
+    depends_on:
+      - firestore-emulator
+
+  appointment-service:
+    build: ./appointment-service
+    container_name: appointment-service
+    ports:
+      - "3002:3000"
+    environment:
+      - PORT=3000
+      - FIREBASE_PROJECT_ID=demo-petcare
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:8080
+    depends_on:
+      - firestore-emulator
+
+  vet-service:
+    build: ./vet-service
+    container_name: vet-service
+    ports:
+      - "3003:3000"
+    environment:
+      - PORT=3000
+      - FIREBASE_PROJECT_ID=demo-petcare
+      - FIRESTORE_EMULATOR_HOST=firestore-emulator:8080
+    depends_on:
+      - firestore-emulator
+
+  frontend:
+    build: ./frontend
+    container_name: petcare-frontend
+    ports:
+      - "8081:80"
+    depends_on:
+      - pet-service
+      - appointment-service
+      - vet-service
+
+volumes:
+  firebase_data:
+    driver: local
+
+

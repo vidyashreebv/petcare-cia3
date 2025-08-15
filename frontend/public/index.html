@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetCare Pro - Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body style="overflow: scroll !important;">
+  <!-- Header -->
+  <header>
+    <div class="container nav-container">
+      <a href="/index.html" class="logo">
+        <i class="fas fa-paw"></i>
+        <span>PetCare Pro</span>
+      </a>
+      <nav>
+        <a href="/index.html" class="active">
+          <i class="fas fa-home"></i>
+          <span>Overview</span>
+        </a>
+        <a href="/pets.html">
+          <i class="fas fa-paw"></i>
+          <span>Pets</span>
+        </a>
+        <a href="/appointments.html">
+          <i class="far fa-calendar-alt"></i>
+          <span>Appointments</span>
+        </a>
+        <a href="/vets.html">
+          <i class="fas fa-user-md"></i>
+          <span>Vets</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="page-header">
+      <h1 class="page-title">
+        <i class="fas fa-chart-line"></i>
+        Dashboard Overview
+      </h1>
+      <p class="page-subtitle">Manage your pet care services efficiently</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="grid grid-cols-4 mb-8">
+      <div class="card text-center">
+        <div class="text-primary mb-4">
+          <i class="fas fa-paw fa-2x"></i>
+        </div>
+        <h3 id="totalPets">0</h3>
+        <p class="text-muted">Total Pets</p>
+      </div>
+      <div class="card text-center">
+        <div class="text-warning mb-4">
+          <i class="fas fa-calendar-alt fa-2x"></i>
+        </div>
+        <h3 id="totalAppointments">0</h3>
+        <p class="text-muted">Appointments</p>
+      </div>
+      <div class="card text-center">
+        <div class="text-success mb-4">
+          <i class="fas fa-user-md fa-2x"></i>
+        </div>
+        <h3 id="totalVets">0</h3>
+        <p class="text-muted">Veterinarians</p>
+      </div>
+      <div class="card text-center">
+        <div class="text-primary mb-4">
+          <i class="fas fa-check-circle fa-2x"></i>
+        </div>
+        <h3 id="completedToday">0</h3>
+        <p class="text-muted">Completed Today</p>
+      </div>
+    </div>
+
+    <!-- Content Grid -->
+    <div class="grid grid-cols-3 mb-8">
+      <div class="card">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-plus-circle"></i>
+            Quick Actions
+          </h2>
+        </div>
+        <div class="flex flex-col gap-4">
+          <a href="/pets.html" class="btn btn-primary">
+            <i class="fas fa-plus"></i>
+            Add New Pet
+          </a>
+          <a href="/appointments.html" class="btn btn-secondary">
+            <i class="far fa-calendar-plus"></i>
+            Schedule Appointment
+          </a>
+          <a href="/vets.html" class="btn btn-secondary">
+            <i class="fas fa-user-plus"></i>
+            Add Veterinarian
+          </a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-clock"></i>
+            Recent Activity
+          </h2>
+        </div>
+        <div id="recentActivity" class="flex flex-col gap-4">
+          <div class="skeleton h-4 rounded"></div>
+          <div class="skeleton h-4 rounded"></div>
+          <div class="skeleton h-4 rounded"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-header">
+          <h2 class="section-title">
+            <i class="fas fa-calendar-day"></i>
+            Today's Schedule
+          </h2>
+        </div>
+        <div id="todaySchedule" class="flex flex-col gap-4">
+          <div class="skeleton h-4 rounded"></div>
+          <div class="skeleton h-4 rounded"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div class="text-muted">
+        © 2025 PetCare Pro. All rights reserved.
+      </div>
+      <div class="footer-links">
+        <a href="http://localhost:4000" target="_blank">
+          <i class="fas fa-database"></i>
+          Firestore Emulator
+        </a>
+        <a href="#" class="text-muted">
+          <i class="fas fa-question-circle"></i>
+          Help
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Service URLs
+    const PETS_BASE = 'http://localhost:3001';
+    const APPOINTMENTS_BASE = 'http://localhost:3002';
+    const VETS_BASE = 'http://localhost:3003';
+
+    // Load dashboard data
+    async function loadDashboardData() {
+      try {
+        // Load pets count
+        const petsResponse = await fetch(`${PETS_BASE}/pets`);
+        const pets = await petsResponse.json();
+        document.getElementById('totalPets').textContent = pets.length;
+
+        // Load appointments count
+        const appointmentsResponse = await fetch(`${APPOINTMENTS_BASE}/appointments`);
+        const appointments = await appointmentsResponse.json();
+        document.getElementById('totalAppointments').textContent = appointments.length;
+
+        // Load vets count
+        const vetsResponse = await fetch(`${VETS_BASE}/vets`);
+        const vets = await vetsResponse.json();
+        document.getElementById('totalVets').textContent = vets.length;
+
+        // Count completed appointments today
+        const today = new Date().toDateString();
+        const completedToday = appointments.filter(apt =>
+          apt.status === 'completed' &&
+          new Date(apt.scheduledAt).toDateString() === today
+        ).length;
+        document.getElementById('completedToday').textContent = completedToday;
+
+        // Load recent activity
+        loadRecentActivity(pets, appointments);
+        loadTodaySchedule(appointments);
+
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        document.getElementById('totalPets').textContent = '-';
+        document.getElementById('totalAppointments').textContent = '-';
+        document.getElementById('totalVets').textContent = '-';
+        document.getElementById('completedToday').textContent = '-';
+      }
+    }
+
+    function loadRecentActivity(pets, appointments) {
+      const container = document.getElementById('recentActivity');
+      const recentItems = [];
+
+      // Add recent pets
+      if (pets.length > 0) {
+        recentItems.push({
+          text: `New pet: ${pets[pets.length - 1].name}`,
+          icon: 'fas fa-paw',
+          color: 'text-primary'
+        });
+      }
+
+      // Add recent appointments
+      if (appointments.length > 0) {
+        const recent = appointments.slice(-2);
+        recent.forEach(apt => {
+          recentItems.push({
+            text: `${apt.vetName} appointment`,
+            icon: 'fas fa-calendar-check',
+            color: 'text-success'
+          });
+        });
+      }
+
+      if (recentItems.length === 0) {
+        container.innerHTML = '<div class="text-muted text-center">No recent activity</div>';
+        return;
+      }
+
+      container.innerHTML = recentItems.slice(-3).map(item => `
+        <div class="flex items-center gap-3 p-3 bg-secondary rounded-md">
+          <div class="${item.color}">
+            <i class="${item.icon}"></i>
+          </div>
+          <div class="text-sm">${item.text}</div>
+        </div>
+      `).join('');
+    }
+
+    function loadTodaySchedule(appointments) {
+      const container = document.getElementById('todaySchedule');
+      const today = new Date().toDateString();
+      const todayAppointments = appointments.filter(apt =>
+        new Date(apt.scheduledAt).toDateString() === today
+      );
+
+      if (todayAppointments.length === 0) {
+        container.innerHTML = '<div class="text-muted text-center">No appointments today</div>';
+        return;
+      }
+
+      container.innerHTML = todayAppointments.map(apt => `
+        <div class="p-3 bg-secondary rounded-md">
+          <div class="font-medium text-sm">${apt.vetName}</div>
+          <div class="text-xs text-muted">Pet: ${apt.petId}</div>
+          <div class="text-xs text-muted">${new Date(apt.scheduledAt).toLocaleTimeString()}</div>
+          <span class="badge status-${apt.status || 'scheduled'} mt-2">${(apt.status || 'scheduled').toUpperCase()}</span>
+        </div>
+      `).join('');
+    }
+
+    // Set active navigation
+    document.addEventListener('DOMContentLoaded', function () {
+      const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+      document.querySelectorAll('nav a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href === `/${currentPage}` || (href === '/index.html' && currentPage === '')) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+
+      // Load dashboard data
+      loadDashboardData();
+    });
+  </script>
+</body>
+
+</html>

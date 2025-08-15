@@ -1,0 +1,12 @@
+{
+  "name": "cia3-root",
+  "private": true,
+  "scripts": {
+    "generate-doc": "node scripts/generate-doc.js"
+  },
+  "dependencies": {
+    "docx": "^8.5.0"
+  }
+}
+
+

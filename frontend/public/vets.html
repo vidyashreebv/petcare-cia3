@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Veterinarians - PetCare Pro</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.		/		// Hide modal and restore body scrolling
+		modal.style.display = 'none';
+		overlay.style.display = 'none';
+		editingVetId = null; modal and restore body scrolling
+		modal.style.display = 'none';
+		overlay.style.display = 'none';
+		editingVetId = null;ax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body style="overflow: scroll !important;">
+	<!-- Header -->
+	<header>
+		<div class="container nav-container">
+			<a href="/index.html" class="logo">
+				<i class="fas fa-paw"></i>
+				<span>PetCare Pro</span>
+			</a>
+			<nav>
+				<a href="/index.html">
+					<i class="fas fa-home"></i>
+					<span>Overview</span>
+				</a>
+				<a href="/pets.html">
+					<i class="fas fa-paw"></i>
+					<span>Pets</span>
+				</a>
+				<a href="/appointments.html">
+					<i class="far fa-calendar-alt"></i>
+					<span>Appointments</span>
+				</a>
+				<a href="/vets.html" class="active">
+					<i class="fas fa-user-md"></i>
+					<span>Vets</span>
+				</a>
+			</nav>
+		</div>
+	</header>
+
+	<!-- Main Content -->
+	<main class="container">
+		<div class="page-header">
+			<h1 class="page-title">
+				<i class="fas fa-user-md"></i>
+				Veterinarian Management
+			</h1>
+			<p class="page-subtitle">Manage veterinary staff and their specializations</p>
+		</div>
+
+		<!-- Action Bar -->
+		<div class="action-bar">
+			<div class="search-container">
+				<i class="fas fa-search"></i>
+				<input type="text" id="searchInput" placeholder="Search vets by name, specialization, or location...">
+			</div>
+			<div class="flex gap-3">
+				<select id="specializationFilter" class="form-select">
+					<option value="">All Specializations</option>
+					<option value="general">General Practice</option>
+					<option value="surgery">Surgery</option>
+					<option value="dentistry">Dentistry</option>
+					<option value="dermatology">Dermatology</option>
+					<option value="cardiology">Cardiology</option>
+					<option value="oncology">Oncology</option>
+					<option value="emergency">Emergency Medicine</option>
+				</select>
+				<button class="btn btn-primary" onclick="showVetModal()">
+					<i class="fas fa-plus"></i>
+					Add Veterinarian
+				</button>
+			</div>
+		</div>
+
+		<!-- Vets Grid -->
+		<div id="vetsContainer" class="grid grid-cols-3 gap-6">
+			<div class="card">
+				<div class="skeleton h-6 rounded mb-4"></div>
+				<div class="skeleton h-4 rounded mb-2"></div>
+				<div class="skeleton h-4 rounded"></div>
+			</div>
+		</div>
+
+		<!-- Empty State -->
+		<div id="emptyState" class="empty-state" style="display: none;">
+			<div class="text-center py-12">
+				<div class="text-muted mb-4">
+					<i class="fas fa-user-md fa-4x"></i>
+				</div>
+				<h3 class="mb-4">No veterinarians registered</h3>
+				<p class="text-muted mb-6">Start by adding your first veterinarian to the system</p>
+				<button class="btn btn-primary" onclick="showVetModal()">
+					<i class="fas fa-plus"></i>
+					Add Veterinarian
+				</button>
+			</div>
+		</div>
+	</main>
+
+	<!-- Vet Modal -->
+	<div id="vetModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>
+					<i class="fas fa-user-md"></i>
+					<span id="modalTitle">Add Veterinarian</span>
+				</h2>
+			</div>
+
+			<form id="vetForm" class="modal-body">
+				<div class="grid grid-cols-2 gap-4 mb-4">
+					<div class="form-group">
+						<label for="vetName">Full Name *</label>
+						<input type="text" id="vetName" name="name" required placeholder="Dr. Jane Smith">
+					</div>
+					<div class="form-group">
+						<label for="vetSpecialization">Specialization *</label>
+						<select id="vetSpecialization" name="specialization" required>
+							<option value="">Select specialization</option>
+							<option value="general">General Practice</option>
+							<option value="surgery">Surgery</option>
+							<option value="dentistry">Dentistry</option>
+							<option value="dermatology">Dermatology</option>
+							<option value="cardiology">Cardiology</option>
+							<option value="oncology">Oncology</option>
+							<option value="emergency">Emergency Medicine</option>
+							<option value="exotic">Exotic Animals</option>
+							<option value="orthopedics">Orthopedics</option>
+							<option value="internal">Internal Medicine</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-2 gap-4 mb-4">
+					<div class="form-group">
+						<label for="vetEmail">Email *</label>
+						<input type="email" id="vetEmail" name="email" required placeholder="dr.smith@example.com">
+					</div>
+					<div class="form-group">
+						<label for="vetPhone">Phone *</label>
+						<input type="tel" id="vetPhone" name="phone" required placeholder="+1 (555) 123-4567">
+					</div>
+				</div>
+
+				<div class="grid grid-cols-2 gap-4 mb-4">
+					<div class="form-group">
+						<label for="vetLicense">License Number *</label>
+						<input type="text" id="vetLicense" name="licenseNumber" required placeholder="VET123456">
+					</div>
+					<div class="form-group">
+						<label for="vetExperience">Years of Experience</label>
+						<input type="number" id="vetExperience" name="experience" min="0" max="50" placeholder="5">
+					</div>
+				</div>
+
+				<div class="form-group mb-4">
+					<label for="vetAddress">Clinic Address</label>
+					<input type="text" id="vetAddress" name="address" placeholder="123 Main St, City, State 12345">
+				</div>
+
+				<div class="grid grid-cols-2 gap-4 mb-4">
+					<div class="form-group">
+						<label for="vetAvailability">Availability</label>
+						<select id="vetAvailability" name="availability">
+							<option value="full-time">Full-time</option>
+							<option value="part-time">Part-time</option>
+							<option value="on-call">On-call</option>
+							<option value="weekends">Weekends only</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="vetEmergency">Emergency Contact</label>
+						<input type="tel" id="vetEmergency" name="emergencyContact" placeholder="+1 (555) 987-6543">
+					</div>
+				</div>
+
+				<div class="form-group mb-6">
+					<label for="vetBio">Professional Bio</label>
+					<textarea id="vetBio" name="bio" rows="3"
+						placeholder="Brief description of qualifications, experience, and areas of expertise..."></textarea>
+				</div>
+
+				<div class="flex justify-end gap-3">
+					<button type="button" class="btn btn-secondary" onclick="closeVetModal()">
+						Cancel
+					</button>
+					<button type="submit" class="btn btn-primary" id="submitBtn">
+						<i class="fas fa-save"></i>
+						<span id="submitText">Add Veterinarian</span>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Modal Overlay -->
+	<div id="modalOverlay" class="modal-overlay"></div>
+
+	<!-- Footer -->
+	<footer>
+		<div class="container footer-content">
+			<div class="text-muted">
+				© 2025 PetCare Pro. All rights reserved.
+			</div>
+			<div class="footer-links">
+				<a href="http://localhost:4000" target="_blank">
+					<i class="fas fa-database"></i>
+					Firestore Emulator
+				</a>
+				<a href="#" class="text-muted">
+					<i class="fas fa-question-circle"></i>
+					Help
+				</a>
+			</div>
+		</div>
+	</footer>
+
+	<script>
+		// Service URL
+		const VETS_BASE = 'http://localhost:3003';
+		let allVets = [];
+		let editingVetId = null;
+
+		// Load vets on page load
+		document.addEventListener('DOMContentLoaded', function () {
+			loadVets();
+			setupEventListeners();
+		});
+
+		// Setup event listeners
+		function setupEventListeners() {
+			const searchInput = document.getElementById('searchInput');
+			const specializationFilter = document.getElementById('specializationFilter');
+			const vetForm = document.getElementById('vetForm');
+			const modalOverlay = document.getElementById('modalOverlay');
+
+			if (searchInput) {
+				searchInput.addEventListener('input', debounce(handleSearch, 300));
+			}
+
+			if (specializationFilter) {
+				specializationFilter.addEventListener('change', handleSpecializationFilter);
+			}
+
+			if (vetForm) {
+				vetForm.addEventListener('submit', handleVetSubmit);
+			}
+
+			if (modalOverlay) {
+				modalOverlay.addEventListener('click', closeVetModal);
+			}
+		}
+
+		// Load vets from API
+		async function loadVets() {
+			try {
+				const response = await fetch(`${VETS_BASE}/vets`);
+				allVets = await response.json();
+				renderVets(allVets);
+			} catch (error) {
+				console.error('Error loading vets:', error);
+				showEmptyState();
+			}
+		}
+
+		// Render vets in grid
+		function renderVets(vets) {
+			const container = document.getElementById('vetsContainer');
+			const emptyState = document.getElementById('emptyState');
+
+			if (vets.length === 0) {
+				container.style.display = 'none';
+				emptyState.style.display = 'block';
+				return;
+			}
+
+			container.style.display = 'grid';
+			emptyState.style.display = 'none';
+
+			container.innerHTML = vets.map(vet => `
+        <div class="card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="icon-container ${getSpecializationColor(vet.specialization)}">
+                <i class="fas fa-user-md"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold">Dr. ${vet.name}</h3>
+                <p class="text-sm text-muted">${vet.specialization ? formatSpecialization(vet.specialization) : 'General Practice'}</p>
+              </div>
+            </div>
+            <div class="dropdown">
+              <button class="btn-icon" onclick="toggleDropdown(event, '${vet.id}')">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdown-${vet.id}">
+                <a href="#" onclick="editVet('${vet.id}')" class="dropdown-item">
+                  <i class="fas fa-edit"></i>
+                  Edit
+                </a>
+                <a href="#" onclick="deleteVet('${vet.id}')" class="dropdown-item text-danger">
+                  <i class="fas fa-trash"></i>
+                  Remove
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2 mb-4">
+            ${vet.email ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-envelope text-muted"></i>
+              <a href="mailto:${vet.email}" class="text-primary hover:underline">${vet.email}</a>
+            </div>` : ''}
+            ${vet.phone ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-phone text-muted"></i>
+              <a href="tel:${vet.phone}" class="text-primary hover:underline">${vet.phone}</a>
+            </div>` : ''}
+            ${vet.licenseNumber ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-id-card text-muted"></i>
+              <span>License: ${vet.licenseNumber}</span>
+            </div>` : ''}
+            ${vet.experience ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-calendar text-muted"></i>
+              <span>${vet.experience} years experience</span>
+            </div>` : ''}
+            ${vet.address ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-map-marker-alt text-muted"></i>
+              <span>${vet.address}</span>
+            </div>` : ''}
+          </div>
+
+          <div class="flex items-center justify-between mb-4">
+            ${vet.availability ? `<span class="badge ${getAvailabilityColor(vet.availability)}">${formatAvailability(vet.availability)}</span>` : ''}
+            ${vet.emergencyContact ? `<button class="btn-icon text-danger" onclick="callEmergency('${vet.emergencyContact}')" title="Emergency: ${vet.emergencyContact}">
+              <i class="fas fa-phone-alt"></i>
+            </button>` : ''}
+          </div>
+
+          ${vet.bio ? `
+            <div class="p-3 bg-secondary rounded-md">
+              <div class="flex items-center gap-2 mb-1">
+                <i class="fas fa-user text-primary"></i>
+                <span class="text-sm font-medium">Bio</span>
+              </div>
+              <p class="text-sm text-muted">${vet.bio}</p>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+		}
+
+		function showEmptyState() {
+			const container = document.getElementById('vetsContainer');
+			const emptyState = document.getElementById('emptyState');
+			container.style.display = 'none';
+			emptyState.style.display = 'block';
+		}
+
+		// Get specialization color
+		function getSpecializationColor(specialization) {
+			const colors = {
+				general: 'text-primary',
+				surgery: 'text-danger',
+				dentistry: 'text-info',
+				dermatology: 'text-warning',
+				cardiology: 'text-danger',
+				oncology: 'text-purple',
+				emergency: 'text-danger',
+				exotic: 'text-success',
+				orthopedics: 'text-info',
+				internal: 'text-primary'
+			};
+			return colors[specialization] || 'text-primary';
+		}
+
+		// Get availability color
+		function getAvailabilityColor(availability) {
+			const colors = {
+				'full-time': 'badge-success',
+				'part-time': 'badge-warning',
+				'on-call': 'badge-info',
+				'weekends': 'badge-secondary'
+			};
+			return colors[availability] || 'badge-primary';
+		}
+
+		// Format specialization for display
+		function formatSpecialization(specialization) {
+			const formatted = {
+				general: 'General Practice',
+				surgery: 'Surgery',
+				dentistry: 'Dentistry',
+				dermatology: 'Dermatology',
+				cardiology: 'Cardiology',
+				oncology: 'Oncology',
+				emergency: 'Emergency Medicine',
+				exotic: 'Exotic Animals',
+				orthopedics: 'Orthopedics',
+				internal: 'Internal Medicine'
+			};
+			return formatted[specialization] || specialization;
+		}
+
+		// Format availability for display
+		function formatAvailability(availability) {
+			const formatted = {
+				'full-time': 'Full-time',
+				'part-time': 'Part-time',
+				'on-call': 'On-call',
+				'weekends': 'Weekends'
+			};
+			return formatted[availability] || availability;
+		}
+
+		// Search functionality
+		function handleSearch(event) {
+			const query = event.target.value.toLowerCase();
+			const filteredVets = allVets.filter(vet =>
+				vet.name.toLowerCase().includes(query) ||
+				(vet.specialization && vet.specialization.toLowerCase().includes(query)) ||
+				(vet.email && vet.email.toLowerCase().includes(query)) ||
+				(vet.address && vet.address.toLowerCase().includes(query)) ||
+				(vet.licenseNumber && vet.licenseNumber.toLowerCase().includes(query))
+			);
+			renderVets(filteredVets);
+		}
+
+		// Specialization filter
+		function handleSpecializationFilter(event) {
+			const specialization = event.target.value;
+			const filteredVets = specialization
+				? allVets.filter(vet => vet.specialization === specialization)
+				: allVets;
+			renderVets(filteredVets);
+		}
+
+		// Modal functions
+		function showVetModal(vet = null) {
+			const modal = document.getElementById('vetModal');
+			const overlay = document.getElementById('modalOverlay');
+			const modalTitle = document.getElementById('modalTitle');
+			const submitText = document.getElementById('submitText');
+			const form = document.getElementById('vetForm');
+
+			if (vet) {
+				modalTitle.textContent = 'Edit Veterinarian';
+				submitText.textContent = 'Update Veterinarian';
+				editingVetId = vet.id;
+
+				// Populate form
+				document.getElementById('vetName').value = vet.name || '';
+				document.getElementById('vetSpecialization').value = vet.specialization || '';
+				document.getElementById('vetEmail').value = vet.email || '';
+				document.getElementById('vetPhone').value = vet.phone || '';
+				document.getElementById('vetLicense').value = vet.licenseNumber || '';
+				document.getElementById('vetExperience').value = vet.experience || '';
+				document.getElementById('vetAddress').value = vet.address || '';
+				document.getElementById('vetAvailability').value = vet.availability || 'full-time';
+				document.getElementById('vetEmergency').value = vet.emergencyContact || '';
+				document.getElementById('vetBio').value = vet.bio || '';
+			} else {
+				modalTitle.textContent = 'Add Veterinarian';
+				submitText.textContent = 'Add Veterinarian';
+				editingVetId = null;
+				form.reset();
+				document.getElementById('vetAvailability').value = 'full-time';
+			}
+
+			modal.style.display = 'block';
+			overlay.style.display = 'block';
+		} function closeVetModal() {
+			const modal = document.getElementById('vetModal');
+			const overlay = document.getElementById('modalOverlay');
+
+			modal.style.display = 'none';
+			overlay.style.display = 'none';
+			editingVetId = null;
+		}
+
+		// Handle vet form submission
+		async function handleVetSubmit(event) {
+			event.preventDefault();
+
+			const formData = new FormData(event.target);
+			const vetData = Object.fromEntries(formData.entries());
+
+			// Convert numeric fields
+			if (vetData.experience) vetData.experience = parseInt(vetData.experience);
+
+			try {
+				let response;
+				if (editingVetId) {
+					response = await fetch(`${VETS_BASE}/vets/${editingVetId}`, {
+						method: 'PUT',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(vetData)
+					});
+				} else {
+					response = await fetch(`${VETS_BASE}/vets`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(vetData)
+					});
+				}
+
+				if (response.ok) {
+					closeVetModal();
+					loadVets();
+					showNotification(`Veterinarian ${editingVetId ? 'updated' : 'added'} successfully!`, 'success');
+				} else {
+					throw new Error('Failed to save veterinarian');
+				}
+			} catch (error) {
+				console.error('Error saving veterinarian:', error);
+				showNotification('Error saving veterinarian. Please try again.', 'error');
+			}
+		}
+
+		// Edit vet
+		function editVet(vetId) {
+			const vet = allVets.find(v => v.id === vetId);
+			if (vet) {
+				showVetModal(vet);
+			}
+		}
+
+		// Delete vet
+		async function deleteVet(vetId) {
+			if (!confirm('Are you sure you want to remove this veterinarian? This action cannot be undone.')) {
+				return;
+			}
+
+			try {
+				const response = await fetch(`${VETS_BASE}/vets/${vetId}`, {
+					method: 'DELETE'
+				});
+
+				if (response.ok) {
+					loadVets();
+					showNotification('Veterinarian removed successfully!', 'success');
+				} else {
+					throw new Error('Failed to remove veterinarian');
+				}
+			} catch (error) {
+				console.error('Error removing veterinarian:', error);
+				showNotification('Error removing veterinarian. Please try again.', 'error');
+			}
+		}
+
+		// Call emergency contact
+		function callEmergency(phone) {
+			if (confirm(`Call emergency contact at ${phone}?`)) {
+				window.location.href = `tel:${phone}`;
+			}
+		}
+
+		// Dropdown toggle
+		function toggleDropdown(event, vetId) {
+			event.stopPropagation();
+			const dropdown = document.getElementById(`dropdown-${vetId}`);
+			const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+			// Close all other dropdowns
+			allDropdowns.forEach(menu => {
+				if (menu !== dropdown) {
+					menu.style.display = 'none';
+				}
+			});
+
+			// Toggle current dropdown
+			dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+		}
+
+		// Close dropdowns when clicking outside
+		document.addEventListener('click', function () {
+			const allDropdowns = document.querySelectorAll('.dropdown-menu');
+			allDropdowns.forEach(menu => menu.style.display = 'none');
+		});
+
+		// Utility functions
+		function debounce(func, wait) {
+			let timeout;
+			return function executedFunction(...args) {
+				const later = () => {
+					clearTimeout(timeout);
+					func(...args);
+				};
+				clearTimeout(timeout);
+				timeout = setTimeout(later, wait);
+			};
+		}
+
+		function showNotification(message, type = 'info') {
+			// Simple notification - can be enhanced with a proper toast library
+			const notification = document.createElement('div');
+			notification.className = `notification notification-${type}`;
+			notification.textContent = message;
+
+			document.body.appendChild(notification);
+
+			setTimeout(() => {
+				notification.remove();
+			}, 3000);
+		}
+	</script>
+</body>
+
+</html>

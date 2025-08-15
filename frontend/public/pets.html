@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pet Management - PetCare Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/style.css">
+</head>
+
+<body style="overflow: scroll !important;">
+  <!-- Header -->
+  <header>
+    <div class="container nav-container">
+      <a href="/index.html" class="logo">
+        <i class="fas fa-paw"></i>
+        <span>PetCare Pro</span>
+      </a>
+      <nav>
+        <a href="/index.html">
+          <i class="fas fa-home"></i>
+          <span>Overview</span>
+        </a>
+        <a href="/pets.html" class="active">
+          <i class="fas fa-paw"></i>
+          <span>Pets</span>
+        </a>
+        <a href="/appointments.html">
+          <i class="far fa-calendar-alt"></i>
+          <span>Appointments</span>
+        </a>
+        <a href="/vets.html">
+          <i class="fas fa-user-md"></i>
+          <span>Vets</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <div class="page-header">
+      <h1 class="page-title">
+        <i class="fas fa-paw"></i>
+        Pet Management
+      </h1>
+      <p class="page-subtitle">View and manage all registered pets</p>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search pets by name, species, or breed...">
+      </div>
+      <button class="btn btn-primary" onclick="showPetModal()">
+        <i class="fas fa-plus"></i>
+        Add New Pet
+      </button>
+    </div>
+
+    <!-- Pets Grid -->
+    <div id="petsContainer" class="grid grid-cols-3 gap-6">
+      <div class="card">
+        <div class="skeleton h-6 rounded mb-4"></div>
+        <div class="skeleton h-4 rounded mb-2"></div>
+        <div class="skeleton h-4 rounded"></div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <div class="text-center py-12">
+        <div class="text-muted mb-4">
+          <i class="fas fa-paw fa-4x"></i>
+        </div>
+        <h3 class="mb-4">No pets registered yet</h3>
+        <p class="text-muted mb-6">Start by adding your first pet to the system</p>
+        <button class="btn btn-primary" onclick="showPetModal()">
+          <i class="fas fa-plus"></i>
+          Add New Pet
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Pet Modal -->
+  <div id="petModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>
+          <i class="fas fa-paw"></i>
+          <span id="modalTitle">Add New Pet</span>
+        </h2>
+      </div>
+
+      <form id="petForm" class="modal-body">
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="form-group">
+            <label for="petName">Pet Name *</label>
+            <input type="text" id="petName" name="name" required>
+          </div>
+          <div class="form-group">
+            <label for="petSpecies">Species *</label>
+            <select id="petSpecies" name="species" required>
+              <option value="">Select species</option>
+              <option value="dog">Dog</option>
+              <option value="cat">Cat</option>
+              <option value="bird">Bird</option>
+              <option value="rabbit">Rabbit</option>
+              <option value="hamster">Hamster</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="form-group">
+            <label for="petBreed">Breed</label>
+            <input type="text" id="petBreed" name="breed" placeholder="e.g., Golden Retriever">
+          </div>
+          <div class="form-group">
+            <label for="petAge">Age</label>
+            <input type="number" id="petAge" name="age" min="0" max="50" placeholder="Age in years">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="form-group">
+            <label for="petWeight">Weight (kg)</label>
+            <input type="number" id="petWeight" name="weight" min="0" step="0.1" placeholder="Weight in kg">
+          </div>
+          <div class="form-group">
+            <label for="petGender">Gender</label>
+            <select id="petGender" name="gender">
+              <option value="">Select gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <label for="ownerName">Owner Name *</label>
+          <input type="text" id="ownerName" name="ownerName" required placeholder="Pet owner's full name">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div class="form-group">
+            <label for="ownerEmail">Owner Email</label>
+            <input type="email" id="ownerEmail" name="ownerEmail" placeholder="owner@example.com">
+          </div>
+          <div class="form-group">
+            <label for="ownerPhone">Owner Phone</label>
+            <input type="tel" id="ownerPhone" name="ownerPhone" placeholder="+1 (555) 123-4567">
+          </div>
+        </div>
+
+        <div class="form-group mb-6">
+          <label for="medicalNotes">Medical Notes</label>
+          <textarea id="medicalNotes" name="medicalNotes" rows="3"
+            placeholder="Any medical conditions, allergies, or special notes..."></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button type="button" class="btn btn-secondary" onclick="closePetModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">
+            <i class="fas fa-save"></i>
+            <span id="submitText">Add Pet</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Overlay -->
+  <div id="modalOverlay" class="modal-overlay" onclick="closePetModal()"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <div class="text-muted">
+        © 2025 PetCare Pro. All rights reserved.
+      </div>
+      <div class="footer-links">
+        <a href="http://localhost:4000" target="_blank">
+          <i class="fas fa-database"></i>
+          Firestore Emulator
+        </a>
+        <a href="#" class="text-muted">
+          <i class="fas fa-question-circle"></i>
+          Help
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Service URL
+    const PETS_BASE = 'http://localhost:3001';
+    let allPets = [];
+    let editingPetId = null;
+
+    // Load pets on page load
+    document.addEventListener('DOMContentLoaded', function () {
+      loadPets();
+      setupEventListeners();
+    });
+
+    // Setup event listeners
+    function setupEventListeners() {
+      const searchInput = document.getElementById('searchInput');
+      const petForm = document.getElementById('petForm');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', debounce(handleSearch, 300));
+      }
+
+      if (petForm) {
+        petForm.addEventListener('submit', handlePetSubmit);
+      }
+    }
+
+    // Load pets from API
+    async function loadPets() {
+      try {
+        const response = await fetch(`${PETS_BASE}/pets`);
+        allPets = await response.json();
+        renderPets(allPets);
+      } catch (error) {
+        console.error('Error loading pets:', error);
+        showEmptyState();
+      }
+    }
+
+    // Render pets in grid
+    function renderPets(pets) {
+      const container = document.getElementById('petsContainer');
+      const emptyState = document.getElementById('emptyState');
+
+      if (pets.length === 0) {
+        container.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      emptyState.style.display = 'none';
+
+      container.innerHTML = pets.map(pet => `
+        <div class="card">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="icon-container ${getSpeciesColor(pet.species)}">
+                <i class="${getSpeciesIcon(pet.species)}"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold">${pet.name}</h3>
+                <p class="text-sm text-muted">${pet.species} ${pet.breed ? `• ${pet.breed}` : ''}</p>
+              </div>
+            </div>
+            <div class="dropdown">
+              <button class="btn-icon" onclick="toggleDropdown(event, '${pet.id}')">
+                <i class="fas fa-ellipsis-v"></i>
+              </button>
+              <div class="dropdown-menu" id="dropdown-${pet.id}">
+                <a href="#" onclick="editPet('${pet.id}')" class="dropdown-item">
+                  <i class="fas fa-edit"></i>
+                  Edit
+                </a>
+                <a href="#" onclick="deletePet('${pet.id}')" class="dropdown-item text-danger">
+                  <i class="fas fa-trash"></i>
+                  Delete
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-2 mb-4">
+            ${pet.age ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-birthday-cake text-muted"></i>
+              <span>${pet.age} years old</span>
+            </div>` : ''}
+            ${pet.weight ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-weight text-muted"></i>
+              <span>${pet.weight} kg</span>
+            </div>` : ''}
+            <div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-user text-muted"></i>
+              <span>${pet.ownerName || 'Unknown Owner'}</span>
+            </div>
+            ${pet.ownerPhone ? `<div class="flex items-center gap-2 text-sm">
+              <i class="fas fa-phone text-muted"></i>
+              <span>${pet.ownerPhone}</span>
+            </div>` : ''}
+          </div>
+
+          ${pet.medicalNotes ? `
+            <div class="p-3 bg-secondary rounded-md">
+              <div class="flex items-center gap-2 mb-1">
+                <i class="fas fa-notes-medical text-warning"></i>
+                <span class="text-sm font-medium">Medical Notes</span>
+              </div>
+              <p class="text-sm text-muted">${pet.medicalNotes}</p>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function showEmptyState() {
+      const container = document.getElementById('petsContainer');
+      const emptyState = document.getElementById('emptyState');
+      container.style.display = 'none';
+      emptyState.style.display = 'block';
+    }
+
+    // Get species icon
+    function getSpeciesIcon(species) {
+      const icons = {
+        dog: 'fas fa-dog',
+        cat: 'fas fa-cat',
+        bird: 'fas fa-dove',
+        rabbit: 'fas fa-rabbit',
+        hamster: 'fas fa-mouse',
+        other: 'fas fa-paw'
+      };
+      return icons[species] || 'fas fa-paw';
+    }
+
+    // Get species color
+    function getSpeciesColor(species) {
+      const colors = {
+        dog: 'text-primary',
+        cat: 'text-warning',
+        bird: 'text-info',
+        rabbit: 'text-success',
+        hamster: 'text-muted',
+        other: 'text-secondary'
+      };
+      return colors[species] || 'text-primary';
+    }
+
+    // Search functionality
+    function handleSearch(event) {
+      const query = event.target.value.toLowerCase();
+      const filteredPets = allPets.filter(pet =>
+        pet.name.toLowerCase().includes(query) ||
+        pet.species.toLowerCase().includes(query) ||
+        (pet.breed && pet.breed.toLowerCase().includes(query)) ||
+        (pet.ownerName && pet.ownerName.toLowerCase().includes(query))
+      );
+      renderPets(filteredPets);
+    }
+
+    // Modal functions
+    function showPetModal(pet = null) {
+      const modal = document.getElementById('petModal');
+      const overlay = document.getElementById('modalOverlay');
+      const modalTitle = document.getElementById('modalTitle');
+      const submitText = document.getElementById('submitText');
+      const form = document.getElementById('petForm');
+
+      if (pet) {
+        modalTitle.textContent = 'Edit Pet';
+        submitText.textContent = 'Update Pet';
+        editingPetId = pet.id;
+
+        // Populate form
+        document.getElementById('petName').value = pet.name || '';
+        document.getElementById('petSpecies').value = pet.species || '';
+        document.getElementById('petBreed').value = pet.breed || '';
+        document.getElementById('petAge').value = pet.age || '';
+        document.getElementById('petWeight').value = pet.weight || '';
+        document.getElementById('petGender').value = pet.gender || '';
+        document.getElementById('ownerName').value = pet.ownerName || '';
+        document.getElementById('ownerEmail').value = pet.ownerEmail || '';
+        document.getElementById('ownerPhone').value = pet.ownerPhone || '';
+        document.getElementById('medicalNotes').value = pet.medicalNotes || '';
+      } else {
+        modalTitle.textContent = 'Add New Pet';
+        submitText.textContent = 'Add Pet';
+        editingPetId = null;
+        form.reset();
+      }
+
+      modal.style.display = 'block';
+      overlay.style.display = 'block';
+    }
+
+    function closePetModal() {
+      const modal = document.getElementById('petModal');
+      const overlay = document.getElementById('modalOverlay');
+
+      // Hide modal and restore body scrolling
+      modal.style.display = 'none';
+      overlay.style.display = 'none';
+      editingPetId = null;
+    }    // Handle pet form submission
+    async function handlePetSubmit(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const petData = Object.fromEntries(formData.entries());
+
+      // Convert numeric fields
+      if (petData.age) petData.age = parseInt(petData.age);
+      if (petData.weight) petData.weight = parseFloat(petData.weight);
+
+      try {
+        let response;
+        if (editingPetId) {
+          response = await fetch(`${PETS_BASE}/pets/${editingPetId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(petData)
+          });
+        } else {
+          response = await fetch(`${PETS_BASE}/pets`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(petData)
+          });
+        }
+
+        if (response.ok) {
+          closePetModal();
+          loadPets();
+          showNotification(`Pet ${editingPetId ? 'updated' : 'added'} successfully!`, 'success');
+        } else {
+          throw new Error('Failed to save pet');
+        }
+      } catch (error) {
+        console.error('Error saving pet:', error);
+        showNotification('Error saving pet. Please try again.', 'error');
+      }
+    }
+
+    // Edit pet
+    function editPet(petId) {
+      const pet = allPets.find(p => p.id === petId);
+      if (pet) {
+        showPetModal(pet);
+      }
+    }
+
+    // Delete pet
+    async function deletePet(petId) {
+      if (!confirm('Are you sure you want to delete this pet? This action cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${PETS_BASE}/pets/${petId}`, {
+          method: 'DELETE'
+        });
+
+        if (response.ok) {
+          loadPets();
+          showNotification('Pet deleted successfully!', 'success');
+        } else {
+          throw new Error('Failed to delete pet');
+        }
+      } catch (error) {
+        console.error('Error deleting pet:', error);
+        showNotification('Error deleting pet. Please try again.', 'error');
+      }
+    }
+
+    // Dropdown toggle
+    function toggleDropdown(event, petId) {
+      event.stopPropagation();
+      const dropdown = document.getElementById(`dropdown-${petId}`);
+      const allDropdowns = document.querySelectorAll('.dropdown-menu');
+
+      // Close all other dropdowns
+      allDropdowns.forEach(menu => {
+        if (menu !== dropdown) {
+          menu.style.display = 'none';
+        }
+      });
+
+      // Toggle current dropdown
+      dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function () {
+      const allDropdowns = document.querySelectorAll('.dropdown-menu');
+      allDropdowns.forEach(menu => menu.style.display = 'none');
+    });
+
+    // Utility functions
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+
+    function showNotification(message, type = 'info') {
+      // Simple notification - can be enhanced with a proper toast library
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+  </script>
+</body>
+
+</html>

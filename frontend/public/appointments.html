@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Appointments - PetCare Pro</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+	<link rel="stylesheet" href="/style.css">
+</head>
+
+<body style="overflow: scroll !important;">
+	<!-- Header -->
+	<header>
+		<div class="container nav-container">
+			<a href="/index.html" class="logo">
+				<i class="fas fa-paw"></i>
+				<span>PetCare Pro</span>
+			</a>
+			<nav>
+				<a href="/index.html">
+					<i class="fas fa-home"></i>
+					<span>Overview</span>
+				</a>
+				<a href="/pets.html">
+					<i class="fas fa-paw"></i>
+					<span>Pets</span>
+				</a>
+				<a href="/appointments.html" class="active">
+					<i class="far fa-calendar-alt"></i>
+					<span>Appointments</span>
+				</a>
+				<a href="/vets.html">
+					<i class="fas fa-user-md"></i>
+					<span>Vets</span>
+				</a>
+			</nav>
+		</div>
+	</header>
+
+	<!-- Main Content -->
+	<main class="container">
+		<div class="page-header">
+			<h1 class="page-title">
+				<i class="far fa-calendar-alt"></i>
+				Appointment Management
+			</h1>
+			<p class="page-subtitle">Schedule and manage veterinary appointments</p>
+		</div>
+
+		<!-- Action Bar -->
+		<div class="action-bar">
+			<div class="search-container">
+				<i class="fas fa-search"></i>
+				<input type="text" id="searchInput" placeholder="Search appointments by owner, pet, or service...">
+			</div>
+			<button class="btn btn-primary" onclick="showAppointmentModal()">
+				<i class="fas fa-plus"></i>
+				Book Appointment
+			</button>
+		</div>
+
+		<!-- Appointments Table -->
+		<div class="card">
+			<div class="card-header">
+				<h2>All Appointments</h2>
+			</div>
+			<div class="card-body">
+				<div class="table-container">
+					<table class="data-table">
+						<thead>
+							<tr>
+								<th>Owner</th>
+								<th>Phone</th>
+								<th>Pet</th>
+								<th>Service</th>
+								<th>Date & Time</th>
+								<th>Vet</th>
+								<th>Status</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody id="appointmentsTable">
+							<!-- Appointments will be loaded here -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- Empty State -->
+		<div id="emptyState" class="empty-state" style="display: none;">
+			<div class="text-center py-12">
+				<div class="text-muted mb-4">
+					<i class="far fa-calendar-alt fa-4x"></i>
+				</div>
+				<h3 class="mb-4">No appointments scheduled yet</h3>
+				<p class="text-muted mb-6">Start by booking the first appointment</p>
+				<button class="btn btn-primary" onclick="showAppointmentModal()">
+					<i class="fas fa-plus"></i>
+					Book Appointment
+				</button>
+			</div>
+		</div>
+	</main>
+
+	<!-- Modal Overlay -->
+	<div id="modalOverlay" class="modal-overlay"></div>
+
+	<!-- Add Appointment Modal -->
+	<div id="appointmentModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>Book New Appointment</h2>
+			</div>
+			<form id="appointmentForm" class="modal-body">
+				<div class="form-row">
+					<div class="form-group">
+						<label for="owner">Owner Name *</label>
+						<input type="text" id="owner" name="owner" required>
+					</div>
+					<div class="form-group">
+						<label for="phone">Phone Number *</label>
+						<input type="tel" id="phone" name="phone" required>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="petName">Pet Name *</label>
+						<input type="text" id="petName" name="petName" required>
+					</div>
+					<div class="form-group">
+						<label for="petType">Pet Type *</label>
+						<select id="petType" name="petType" required>
+							<option value="">Select Pet Type</option>
+							<option value="dog">Dog</option>
+							<option value="cat">Cat</option>
+							<option value="bird">Bird</option>
+							<option value="rabbit">Rabbit</option>
+							<option value="fish">Fish</option>
+							<option value="other">Other</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="service">Service *</label>
+					<select id="service" name="service" required>
+						<option value="">Select Service</option>
+						<option value="general-checkup">General Checkup</option>
+						<option value="vaccination">Vaccination</option>
+						<option value="surgery">Surgery</option>
+						<option value="dental">Dental Care</option>
+						<option value="grooming">Grooming</option>
+						<option value="emergency">Emergency</option>
+					</select>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="date">Date *</label>
+						<input type="date" id="date" name="date" required>
+					</div>
+					<div class="form-group">
+						<label for="time">Time *</label>
+						<input type="time" id="time" name="time" required>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="vet">Preferred Vet</label>
+					<select id="vet" name="vet">
+						<option value="">Any Available Vet</option>
+						<!-- Vets will be loaded here -->
+					</select>
+				</div>
+
+				<div class="form-actions">
+					<button type="button" class="btn btn-secondary" onclick="closeAppointmentModal()">Cancel</button>
+					<button type="submit" class="btn btn-primary">Book Appointment</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Edit Appointment Modal -->
+	<div id="editAppointmentModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2>Edit Appointment</h2>
+				<button class="modal-close" onclick="closeEditAppointmentModal()">
+					<i class="fas fa-times"></i>
+				</button>
+			</div>
+			<form id="editAppointmentForm" class="modal-body">
+				<input type="hidden" id="editAppointmentId">
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="editOwner">Owner Name *</label>
+						<input type="text" id="editOwner" name="owner" required>
+					</div>
+					<div class="form-group">
+						<label for="editPhone">Phone Number *</label>
+						<input type="tel" id="editPhone" name="phone" required>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="editPetName">Pet Name *</label>
+						<input type="text" id="editPetName" name="petName" required>
+					</div>
+					<div class="form-group">
+						<label for="editPetType">Pet Type *</label>
+						<select id="editPetType" name="petType" required>
+							<option value="">Select Pet Type</option>
+							<option value="dog">Dog</option>
+							<option value="cat">Cat</option>
+							<option value="bird">Bird</option>
+							<option value="rabbit">Rabbit</option>
+							<option value="fish">Fish</option>
+							<option value="other">Other</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<label for="editService">Service *</label>
+					<select id="editService" name="service" required>
+						<option value="">Select Service</option>
+						<option value="general-checkup">General Checkup</option>
+						<option value="vaccination">Vaccination</option>
+						<option value="surgery">Surgery</option>
+						<option value="dental">Dental Care</option>
+						<option value="grooming">Grooming</option>
+						<option value="emergency">Emergency</option>
+					</select>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="editDate">Date *</label>
+						<input type="date" id="editDate" name="date" required>
+					</div>
+					<div class="form-group">
+						<label for="editTime">Time *</label>
+						<input type="time" id="editTime" name="time" required>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label for="editVet">Preferred Vet</label>
+						<select id="editVet" name="vet">
+							<option value="">Any Available Vet</option>
+							<!-- Vets will be loaded here -->
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="editStatus">Status</label>
+						<select id="editStatus" name="status">
+							<option value="pending">Pending</option>
+							<option value="confirmed">Confirmed</option>
+							<option value="completed">Completed</option>
+							<option value="cancelled">Cancelled</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-actions">
+					<button type="button" class="btn btn-secondary"
+						onclick="closeEditAppointmentModal()">Cancel</button>
+					<button type="button" class="btn btn-primary" onclick="saveEditAppointment()">Save Changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		let currentEditingAppointment = null;
+
+		// Show appointment modal
+		function showAppointmentModal() {
+			const modal = document.getElementById('appointmentModal');
+			const overlay = document.getElementById('modalOverlay');
+
+			// Set minimum date to today
+			const today = new Date().toISOString().split('T')[0];
+			document.getElementById('date').min = today;
+
+			modal.style.display = 'block';
+			overlay.style.display = 'block';
+		}
+
+		// Close appointment modal
+		function closeAppointmentModal() {
+			const modal = document.getElementById('appointmentModal');
+			const overlay = document.getElementById('modalOverlay');
+
+			modal.style.display = 'none';
+			overlay.style.display = 'none';
+		}
+
+		// Show edit appointment modal
+		function showEditAppointmentModal(appointment) {
+			currentEditingAppointment = appointment;
+
+			// Populate form fields
+			document.getElementById('editAppointmentId').value = appointment.id;
+			document.getElementById('editOwner').value = appointment.owner || '';
+			document.getElementById('editPhone').value = appointment.phone || '';
+			document.getElementById('editPetName').value = appointment.petName || '';
+			document.getElementById('editPetType').value = appointment.petType || '';
+			document.getElementById('editService').value = appointment.service || '';
+			document.getElementById('editDate').value = appointment.date || '';
+			document.getElementById('editTime').value = appointment.time || '';
+			document.getElementById('editVet').value = appointment.vet || '';
+			document.getElementById('editStatus').value = appointment.status || 'pending';
+
+			// Show modal
+			const modal = document.getElementById('editAppointmentModal');
+			const overlay = document.getElementById('modalOverlay');
+
+			modal.style.display = 'block';
+			overlay.style.display = 'block';
+		}
+
+		// Close edit appointment modal
+		function closeEditAppointmentModal() {
+			const modal = document.getElementById('editAppointmentModal');
+			const overlay = document.getElementById('modalOverlay');
+
+			modal.style.display = 'none';
+			overlay.style.display = 'none';
+
+			// Reset form
+			document.getElementById('editAppointmentForm').reset();
+			currentEditingAppointment = null;
+		}
+
+		async function saveEditAppointment() {
+			if (!currentEditingAppointment) return;
+
+			const updatedAppointment = {
+				owner: document.getElementById('editOwner').value,
+				phone: document.getElementById('editPhone').value,
+				petName: document.getElementById('editPetName').value,
+				petType: document.getElementById('editPetType').value,
+				service: document.getElementById('editService').value,
+				date: document.getElementById('editDate').value,
+				time: document.getElementById('editTime').value,
+				vet: document.getElementById('editVet').value,
+				status: document.getElementById('editStatus').value
+			};
+
+			try {
+				const response = await fetch(`/appointments/${currentEditingAppointment.id}`, {
+					method: 'PUT',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(updatedAppointment)
+				});
+
+				if (response.ok) {
+					closeEditAppointmentModal();
+					loadAppointments(); // Refresh the appointments list
+				} else {
+					alert('Failed to update appointment');
+				}
+			} catch (error) {
+				console.error('Error updating appointment:', error);
+				alert('Error updating appointment');
+			}
+		}
+
+		// Delete appointment
+		async function deleteAppointment(id) {
+			if (!confirm('Are you sure you want to delete this appointment?')) {
+				return;
+			}
+
+			try {
+				const response = await fetch(`/appointments/${id}`, {
+					method: 'DELETE'
+				});
+
+				if (response.ok) {
+					loadAppointments(); // Refresh the appointments list
+				} else {
+					alert('Failed to delete appointment');
+				}
+			} catch (error) {
+				console.error('Error deleting appointment:', error);
+				alert('Error deleting appointment');
+			}
+		}
+
+		// Load appointments
+		async function loadAppointments() {
+			try {
+				const response = await fetch('/appointments');
+				const appointments = await response.json();
+
+				const tbody = document.getElementById('appointmentsTable');
+				tbody.innerHTML = '';
+
+				appointments.forEach(appointment => {
+					const row = document.createElement('tr');
+					row.innerHTML = `
+					<td>${appointment.owner}</td>
+					<td>${appointment.phone}</td>
+					<td>${appointment.petName} (${appointment.petType})</td>
+					<td>${appointment.service}</td>
+					<td>${appointment.date} ${appointment.time}</td>
+					<td>${appointment.vet || 'Any Available'}</td>
+					<td><span class="status status-${appointment.status}">${appointment.status}</span></td>
+					<td>
+						<button class="btn btn-sm btn-secondary" onclick="showEditAppointmentModal(${JSON.stringify(appointment).replace(/"/g, '&quot;')})">
+							<i class="fas fa-edit"></i>
+						</button>
+						<button class="btn btn-sm btn-danger" onclick="deleteAppointment('${appointment.id}')">
+							<i class="fas fa-trash"></i>
+						</button>
+					</td>
+				`;
+					tbody.appendChild(row);
+				});
+			} catch (error) {
+				console.error('Error loading appointments:', error);
+			}
+		}
+
+		// Load vets for dropdown
+		async function loadVets() {
+			try {
+				const response = await fetch('/vets');
+				const vets = await response.json();
+
+				const vetSelects = [document.getElementById('vet'), document.getElementById('editVet')];
+				vetSelects.forEach(select => {
+					// Clear existing options except the first one
+					while (select.children.length > 1) {
+						select.removeChild(select.lastChild);
+					}
+
+					vets.forEach(vet => {
+						const option = document.createElement('option');
+						option.value = vet.name;
+						option.textContent = `Dr. ${vet.name} (${vet.specialization})`;
+						select.appendChild(option);
+					});
+				});
+			} catch (error) {
+				console.error('Error loading vets:', error);
+			}
+		}
+
+		// Handle appointment form submission
+		document.getElementById('appointmentForm').addEventListener('submit', async function (e) {
+			e.preventDefault();
+
+			const formData = new FormData(this);
+			const appointmentData = Object.fromEntries(formData);
+
+			try {
+				const response = await fetch('/appointments', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify(appointmentData)
+				});
+
+				if (response.ok) {
+					closeAppointmentModal();
+					this.reset();
+					loadAppointments(); // Refresh the appointments list
+				} else {
+					alert('Failed to book appointment');
+				}
+			} catch (error) {
+				console.error('Error booking appointment:', error);
+				alert('Error booking appointment');
+			}
+		});
+
+		// Set up event listeners
+		function setupEventListeners() {
+			// Close modal when clicking on overlay
+			document.getElementById('modalOverlay').addEventListener('click', function (e) {
+				if (e.target === this) {
+					closeAppointmentModal();
+					closeEditAppointmentModal();
+				}
+			});
+
+			// Prevent modal from closing when clicking inside the modal
+			document.getElementById('appointmentModal').addEventListener('click', function (e) {
+				e.stopPropagation();
+			});
+
+			document.getElementById('editAppointmentModal').addEventListener('click', function (e) {
+				e.stopPropagation();
+			});
+
+			// Close modal with Escape key
+			document.addEventListener('keydown', function (e) {
+				if (e.key === 'Escape') {
+					closeAppointmentModal();
+					closeEditAppointmentModal();
+				}
+			});
+		}
+
+		// Initialize
+		document.addEventListener('DOMContentLoaded', function () {
+			loadAppointments();
+			loadVets();
+			setupEventListeners();
+		});
+	</script>
+
+</body>
+
+</html>
