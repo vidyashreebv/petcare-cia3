@@ -131,7 +131,10 @@
 				<div class="form-row">
 					<div class="form-group">
 						<label for="petName">Pet Name *</label>
-						<input type="text" id="petName" name="petName" required>
+						<select id="petName" name="petName" required>
+							<option value="">Select Pet</option>
+							<!-- Pets will be loaded here -->
+						</select>
 					</div>
 					<div class="form-group">
 						<label for="petType">Pet Type *</label>
@@ -359,7 +362,7 @@
 			};
 
 			try {
-				const response = await fetch(`/appointments/${currentEditingAppointment.id}`, {
+				const response = await fetch(`http://localhost:3002/appointments/${currentEditingAppointment.id}`, {
 					method: 'PUT',
 					headers: {
 						'Content-Type': 'application/json'
@@ -386,7 +389,7 @@
 			}
 
 			try {
-				const response = await fetch(`/appointments/${id}`, {
+				const response = await fetch(`http://localhost:3002/appointments/${id}`, {
 					method: 'DELETE'
 				});
 
@@ -404,7 +407,7 @@
 		// Load appointments
 		async function loadAppointments() {
 			try {
-				const response = await fetch('/appointments');
+				const response = await fetch('http://localhost:3002/appointments');
 				const appointments = await response.json();
 
 				const tbody = document.getElementById('appointmentsTable');
@@ -439,7 +442,7 @@
 		// Load vets for dropdown
 		async function loadVets() {
 			try {
-				const response = await fetch('/vets');
+				const response = await fetch('http://localhost:3003/vets');
 				const vets = await response.json();
 
 				const vetSelects = [document.getElementById('vet'), document.getElementById('editVet')];
@@ -461,6 +464,42 @@
 			}
 		}
 
+		// Load pets for dropdown
+		async function loadPets() {
+			try {
+				const response = await fetch('http://localhost:3001/pets');
+				const pets = await response.json();
+
+				const petSelect = document.getElementById('petName');
+				// Clear existing options except the first one
+				while (petSelect.children.length > 1) {
+					petSelect.removeChild(petSelect.lastChild);
+				}
+
+				pets.forEach(pet => {
+					const option = document.createElement('option');
+					option.value = pet.name;
+					option.setAttribute('data-owner', pet.owner);
+					option.setAttribute('data-phone', pet.phone);
+					option.setAttribute('data-type', pet.type);
+					option.textContent = `${pet.name} (${pet.type}) - Owner: ${pet.owner}`;
+					petSelect.appendChild(option);
+				});
+
+				// Auto-fill owner and phone when pet is selected
+				petSelect.addEventListener('change', function () {
+					const selectedOption = this.options[this.selectedIndex];
+					if (selectedOption.value) {
+						document.getElementById('owner').value = selectedOption.getAttribute('data-owner') || '';
+						document.getElementById('phone').value = selectedOption.getAttribute('data-phone') || '';
+						document.getElementById('petType').value = selectedOption.getAttribute('data-type') || '';
+					}
+				});
+			} catch (error) {
+				console.error('Error loading pets:', error);
+			}
+		}
+
 		// Handle appointment form submission
 		document.getElementById('appointmentForm').addEventListener('submit', async function (e) {
 			e.preventDefault();
@@ -469,7 +508,7 @@
 			const appointmentData = Object.fromEntries(formData);
 
 			try {
-				const response = await fetch('/appointments', {
+				const response = await fetch('http://localhost:3002/appointments', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
@@ -522,6 +561,7 @@
 		document.addEventListener('DOMContentLoaded', function () {
 			loadAppointments();
 			loadVets();
+			loadPets();
 			setupEventListeners();
 		});
 	</script>

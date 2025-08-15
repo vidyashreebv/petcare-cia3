@@ -113,9 +113,47 @@ app.get('/health', (req, res) => {
 // Create Appointment
 app.post('/appointments', async (req, res) => {
   try {
-    const { petId, vetName, reason, scheduledAt, status } = req.body || {};
+    const { 
+      owner, 
+      phone, 
+      petName, 
+      petType, 
+      service, 
+      date, 
+      time, 
+      vet,
+      // Legacy support
+      petId, 
+      vetName, 
+      reason, 
+      scheduledAt, 
+      status 
+    } = req.body || {};
+
+    // Handle new frontend format
+    if (owner && petName && service && date && time) {
+      const now = new Date().toISOString();
+      const newAppt = {
+        owner,
+        phone: phone || '',
+        petName,
+        petType: petType || '',
+        service,
+        date,
+        time,
+        vet: vet || 'Any Available Vet',
+        status: status || 'pending',
+        createdAt: now,
+        updatedAt: now
+      };
+      const ref = await appointments.add(newAppt);
+      const saved = await ref.get();
+      return res.status(201).json({ id: ref.id, ...saved.data() });
+    }
+
+    // Legacy format support
     if (!petId || !vetName || !scheduledAt) {
-      return res.status(400).json({ error: 'petId, vetName, scheduledAt are required' });
+      return res.status(400).json({ error: 'Required fields missing' });
     }
     const petDoc = await pets.doc(petId).get();
     if (!petDoc.exists) {
